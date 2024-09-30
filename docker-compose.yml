@@ -1,0 +1,35 @@
+﻿version: '3.4'
+
+services:
+  micromarincasev2.api:
+    image: ${DOCKER_REGISTRY-}micromarincasev2api
+    build:
+      context: .
+      dockerfile: src/MicroMarinCaseV2.Api/Dockerfile
+    environment:
+      - DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false  # Globalization Invariant modunu kapatır
+    networks:
+      - db-network2
+    depends_on:
+      - micromarin.mssql2
+
+  micromarin.mssql2:
+    container_name: micromarin-sql-server2
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "1234qwer."
+    ports:
+      - 1399:1433
+    volumes:
+      - my-volume2:/var/opt/mssql
+    networks:
+      - db-network2
+
+volumes:
+  my-volume2:
+
+networks:
+  db-network2:
+    driver: bridge
